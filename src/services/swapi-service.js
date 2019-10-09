@@ -1,40 +1,53 @@
 export default class SwapiService {
-  _apiBase = 'https://swapi.co/api'
+  _apiBase = 'https://swapi.co/api';
+  _imageBase = 'https://starwars-visualguide.com/assets/img';
 
-  getResource = async (url) => {
-    const res = await fetch(`${this._apiBase}${url}`);
+  getResource = async (base, url) => {
+    const res = await fetch(`${base}${url}`);
     if(!res.ok) throw new Error(`Couldn't fetch ${url}, received ${res.status}`);
     return await res.json();
   };
 
   getAllPeople = async () => {
-    const res = await this.getResource(`/people/`);
+    const res = await this.getResource(this._apiBase, `/people/`);
     return res.results.map(this._transformPerson);
   };
 
   getPerson = async (id) => {
-    const person = await this.getResource(`/people/${id}`);
+    const person = await this.getResource(this._apiBase, `/people/${id}`);
     return this._transformPerson(person);
   };
 
   getAllPlanets = async () => {
-    const res = await this.getResource(`/planets/`);
+    const res = await this.getResource(this._apiBase, `/planets/`);
     return res.results.map(this._transformPlanet);
   };
 
   getPlanet = async (id) => {
-    const planet = await this.getResource(`/planets/${id}`);
+    const planet = await this.getResource(this._apiBase, `/planets/${id}`);
     return this._transformPlanet(planet);
   };
 
   getAllStarships = async () => {
-    const res = await this.getResource(`/starships/`);
+    const res = await this.getResource(this._apiBase, `/starships/`);
     return res.results.map(this._transformStarship);
   };
 
   getStarship = async (id) => {
-    const starship = await this.getResource(`/starships/${id}`);
+    const starship = await this.getResource(this._apiBase, `/starships/${id}`);
     return this._transformStarship(starship);
+  };
+
+  getPersonImage = ({ id }) => {
+    return `${this._imageBase}/characters/${id}.jpg`;
+  };
+
+  getStarshipImage = ({ id }) => {
+    return `${this._imageBase}/starships/${id}.jpg`;
+  };
+
+  getPlanetImage = ({ id }) => {
+    return `${this._imageBase}/planets/${id}.jpg`;
   };
 
   _getId = (item) => {
@@ -57,11 +70,11 @@ export default class SwapiService {
       name: starship.name,
       model: starship.model,
       manufacturer: starship.manufacturer,
-      costInCredits: starship.costInCredits,
+      costInCredits: starship.cost_in_credits,
       length: starship.length,
       crew: starship.crew,
       passengers: starship.passengers,
-      cargoCapacity: starship.cargoCapacity
+      cargoCapacity: starship.cargo_capacity
     };
   };
 

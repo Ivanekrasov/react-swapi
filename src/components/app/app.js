@@ -7,6 +7,15 @@ import PeoplePage from '../people-page';
 import SwapiService from '../../services/swapi-service';
 import ErrorBoundry from '../error-boundry';
 import './app.scss';
+import {
+  PersonList,
+  PlanetList,
+  StarshipList,
+  PersonDetails,
+  PlanetDetails,
+  StarshipDetails
+ } from '../sw-components';
+ import { SwapiServiceProvider } from '../swapi-service-context'; 
 
 export default class App extends Component {
   swapiService = new SwapiService();
@@ -25,33 +34,34 @@ export default class App extends Component {
   };
 
   render() {
-
     if (this.state.hasError) {
       return <ErrorIndicator />
     }
-
-    const planet = this.state.showRandomPlanet ?
-      <RandomPlanet/> :
-      null;
+    
+    const planet = this.state.showRandomPlanet ? <RandomPlanet/> : null;
 
     return (
       <ErrorBoundry>
-        <div className="stardb-app">
-          <Header />
-          { planet }
+        <SwapiServiceProvider value={this.swapiService}>
+          <div className="stardb-app">
+            <Header />
+            { planet }
 
-          <div className="row mb2 button-row">
-            <button
-              className="toggle-planet btn btn-warning btn-lg"
-              onClick={this.toggleRandomPlanet}>
-              Toggle Random Planet
-            </button>
-            <ErrorButton />
+            <div className="row mb2 button-row">
+              <button
+                className="toggle-planet btn btn-warning btn-lg"
+                onClick={this.toggleRandomPlanet}>
+                Toggle Random Planet
+              </button>
+              <ErrorButton />
+            </div>
+
+            <PeoplePage />
+            
+            <StarshipDetails itemId={9}/>
+
           </div>
-
-          <PeoplePage />
-
-        </div>
+        </SwapiServiceProvider>
       </ErrorBoundry>
     );
   }
